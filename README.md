@@ -1,7 +1,9 @@
 # RailsSQLPrettifier
 
-This is an ActiveRecord integration for a niceql gem.
-Niceql is a small, nice, simple and zero dependency solution for SQL prettifying for Ruby. 
+This is an ActiveRecord integration for a niceql gem ( niceql is a small, nice, simple and zero dependency solution for the SQL prettifying in ruby ).
+
+This gem is an extraction from niceql version 0.4.x. Its separated by different ActiveRecord versions, previous it had some version logic branching e.t.c. 
+but that is hard to maintain and test, and also breaking the idea of niceql to be dependentless solution, so now niceql is a completely railsfree solution yeay!
 
 Any reasonable suggestions are welcome. 
 
@@ -22,6 +24,9 @@ after:
 
 
 ## Installation
+
+rails_sql_prettifier, has several version compatible with different active_record versions, so pay attention to the right versioning
+if whenever you specify versions manually.   
 
 Add this line to your application's Gemfile:
 

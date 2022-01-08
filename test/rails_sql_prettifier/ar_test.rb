@@ -8,8 +8,22 @@ ActiveRecord::Base.establish_connection(
   database: ':memory:'
 )
 
-ActiveRecord::Migration.create_table(:users)
-ActiveRecord::Migration.create_table(:comments) do |t|
+# ActiveRecord::Base.establish_connection(
+#   adapter: 'postgresql',
+#   database: 'niceql-test',
+#   user: 'postgres'
+# )
+
+
+Niceql.configure { |config|
+  config.pg_adapter_with_nicesql = true
+  config.prettify_active_record_log_output = true
+}
+
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+
+ActiveRecord::Migration.create_table(:users, force: true)
+ActiveRecord::Migration.create_table(:comments, force: true) do |t|
   t.belongs_to :user
 end
 
