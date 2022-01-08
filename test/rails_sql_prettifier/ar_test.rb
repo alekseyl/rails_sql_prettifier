@@ -38,10 +38,8 @@ class ARTest < Minitest::Test
   end
 
   test 'ar_using_pg_adapter? whenever AR is < 6.1 ' do
-    ActiveRecord::Base.stub_if_defined(:connection_db_config, nil) {
-      ActiveRecord::Base.stub(:connection_config, {adapter: 'postgresql', encoding: 'utf8', database: 'niceql_test'}) {
-        assert(Niceql::NiceQLConfig.new.ar_using_pg_adapter?)
-      }
+    ActiveRecord::Base.stub(:connection_config, {adapter: 'postgresql', encoding: 'utf8', database: 'niceql_test'}) {
+      assert(Niceql::NiceQLConfig.new.ar_using_pg_adapter?)
     }
   end
 
