@@ -1,4 +1,5 @@
 require_relative '../test_helper'
+require 'differ'
 require 'byebug'
 
 ActiveRecord::Base.logger = Logger.new(STDERR)
@@ -32,13 +33,13 @@ end
 class ARTest < Minitest::Test
   extend ::ActiveSupport::Testing::Declarative
 
-  test 'ar_using_pg_adapter? whenever AR is not defined will be false' do
-    assert_equal( ActiveRecord::Base.connection_db_config.adapter, 'sqlite3' )
+  test 'ar_using_pg_adapter? is false when connection is not using pg' do
+    assert( ActiveRecord::Base.connection_config[:adapter] == 'sqlite3')
     assert( !Niceql::NiceQLConfig.new.ar_using_pg_adapter? )
   end
 
-  test 'ar_using_pg_adapter? should be true whenever connection_db_config.adapter is postgresql' do
-    ActiveRecord::Base.connection_db_config.stub(:adapter, 'postgresql') {
+  test 'ar_using_pg_adapter? should be true when the AR connection uses postgres ' do
+    ActiveRecord::Base.stub(:connection_config, {adapter: 'postgresql', encoding: 'utf8', database: 'niceql_test'}) {
       assert(Niceql::NiceQLConfig.new.ar_using_pg_adapter?)
     }
   end
