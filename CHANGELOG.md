@@ -1,3 +1,6 @@
+# 5.0.1
+* Fixed issue with Niceql.configure not configuring anything + test covered
+
 # 5.0.0
 
 * This a active record prior to 6.0 version compatible niceql integration 
