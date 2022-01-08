@@ -31,16 +31,15 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = '>= 2.4'
-  spec.add_dependency "niceql", '>= 0.5.1'
+  spec.add_dependency "niceql", '~> 0.5'
 
-  spec.add_development_dependency "activerecord"
+  spec.add_development_dependency "activerecord", '>= 6.1', '< 7'
 
   spec.add_development_dependency "bundler", ">= 1"
   spec.add_development_dependency "rake", ">= 12.3.3"
   spec.add_development_dependency "minitest", "~> 5.0"
 
-  spec.add_development_dependency "differ"
-  spec.add_development_dependency "pry-byebug"
-  spec.add_development_dependency "benchmark-ips"
-  spec.add_development_dependency 'sqlite3'
+  spec.add_development_dependency "differ", '~> 0.1'
+  spec.add_development_dependency "pry-byebug", '~> 3.9'
+  spec.add_development_dependency 'sqlite3', '~> 1'
 end

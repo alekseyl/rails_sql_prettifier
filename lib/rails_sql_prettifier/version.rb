@@ -1,3 +1,3 @@
 module RailsSQLPrettifier
-  VERSION = '7.0.1'
+  VERSION = '6.1.1'
 end

@@ -55,10 +55,7 @@ module RailsSQLPrettifier
 
 
     def ar_using_pg_adapter?
-      adapter = ActiveRecord::Base.try(:connection_db_config).try(:adapter) ||
-        ActiveRecord::Base.try(:connection_config)&.with_indifferent_access&.dig(:adapter)
-
-      adapter == 'postgresql'
+      ActiveRecord::Base.connection_db_config.adapter == 'postgresql'
     end
 
     def initialize

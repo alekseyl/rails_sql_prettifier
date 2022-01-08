@@ -104,7 +104,7 @@ class NiceQLTest < Minitest::Test
     Niceql.config.stub(:prettify_pg_errors, true) do
       assert_equal_standard( si.to_s, prepare_sample_err(err, err_template) )
     end
-  end unless ActiveRecord.version <= Gem::Version.new(5)
+  end
 
   test 'Statement Invalid old format' do
     err = <<~ERR
