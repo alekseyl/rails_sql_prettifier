@@ -1,4 +1,4 @@
-# 5.0.1
+# 5.0.2
 * Fixed issue with Niceql.configure not configuring anything + test covered
 
 # 5.0.0
