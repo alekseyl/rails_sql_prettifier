@@ -71,10 +71,10 @@ class NiceQLTest < Minitest::Test
 
   def broken_sql_sample
       <<~SQL
-        SELECT err
-        FROM ( VALUES(1), (2) )
-        WHERE id="100"
-        ORDER BY 1
+      SELECT err
+      FROM ( VALUES(1), (2) )
+      WHERE id="100"
+      ORDER BY 1
     SQL
   end
 
@@ -136,7 +136,7 @@ class NiceQLTest < Minitest::Test
       Niceql.configure{ |c| c.prettify_pg_errors = true }
     }
 
-    ActiveRecord::Base.connection_db_config.stub(:adapter, 'postgresql') {
+    ActiveRecord::Base.stub(:connection_config, { adapter: 'postgresql'} ) {
       ::ActiveRecord::StatementInvalid.stub_must(:include, -> (_module) {
         assert_equal( _module, RailsSQLPrettifier::ErrorExt )
       }) { Niceql.configure{ |c| c.prettify_pg_errors = true } }
