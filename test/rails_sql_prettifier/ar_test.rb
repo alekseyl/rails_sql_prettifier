@@ -1,5 +1,4 @@
 require_relative '../test_helper'
-require 'differ'
 require 'byebug'
 
 ActiveRecord::Base.logger = Logger.new(STDERR)
@@ -9,8 +8,22 @@ ActiveRecord::Base.establish_connection(
   database: ':memory:'
 )
 
-ActiveRecord::Migration.create_table(:users)
-ActiveRecord::Migration.create_table(:comments) do |t|
+# ActiveRecord::Base.establish_connection(
+#   adapter: 'postgresql',
+#   database: 'niceql-test',
+#   user: 'postgres'
+# )
+
+
+Niceql.configure { |config|
+  config.pg_adapter_with_nicesql = true
+  config.prettify_active_record_log_output = true
+}
+
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+
+ActiveRecord::Migration.create_table(:users, force: true)
+ActiveRecord::Migration.create_table(:comments, force: true) do |t|
   t.belongs_to :user
 end
 
@@ -19,15 +32,6 @@ class User < ActiveRecord::Base
 end
 
 class Comment < ActiveRecord::Base
-end
-
-# ActiveRecord < 6 do not have connection_db_config method
-# so it cannot be stubbed by usual Object stub method.
-class << ActiveRecord::Base
-  def stub_if_defined(name, val_or_callable, *block_args, &block)
-    # stub only if respond otherwise just execute
-    respond_to?( name ) ? stub(name, val_or_callable, *block_args, &block) : yield
-  end
 end
 
 class ARTest < Minitest::Test

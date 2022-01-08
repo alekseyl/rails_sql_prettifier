@@ -6,6 +6,8 @@ require 'byebug'
 # but that is not an issue for a testing
 ::ActiveRecord::StatementInvalid.include( RailsSQLPrettifier::ErrorExt )
 
+ActiveRecord::Base.logger = Logger.new(STDOUT)
+
 class NiceQLTest < Minitest::Test
   extend ::ActiveSupport::Testing::Declarative
 
@@ -120,4 +122,38 @@ class NiceQLTest < Minitest::Test
       assert_equal_standard( si.to_s, prepare_sample_err(err, err_template) )
     end
   end
+
+  test 'PostgreSQLAdapter will include PostgresAdapterNiceQL after config setup ' do
+    # activerecord will not include adapter by default, unless we use a pg connection setup
+    class ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter; end unless defined?(::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
+
+    ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.stub_must(:include, ->( _module ) {
+      assert_equal( _module, RailsSQLPrettifier::PostgresAdapterNiceQL )
+    } ) {
+      Niceql.configure{ |c| c.pg_adapter_with_nicesql = true }
+    }
+  end
+
+  test 'AbstractAdapter will be extended with AbstractAdapterLogPrettifier after config setup bb' do
+    ::ActiveRecord::ConnectionAdapters::AbstractAdapter.stub_must(:prepend, ->( _module ) {
+      assert_equal( _module, RailsSQLPrettifier::AbstractAdapterLogPrettifier )
+    } ) {
+      Niceql.configure{ |c| c.prettify_active_record_log_output = true }
+    }
+  end
+
+  test 'StatementInvalid will include ErrorExt only when ar_using_pg_adapter? is true and prettify_pg_errors true' do
+    assert(!Niceql::NiceQLConfig.new.ar_using_pg_adapter?)
+
+    ::ActiveRecord::StatementInvalid.stub_must_not(:include ) {
+      Niceql.configure{ |c| c.prettify_pg_errors = true }
+    }
+
+    ActiveRecord::Base.stub(:connection_config, { adapter: 'postgresql'} ) {
+      ::ActiveRecord::StatementInvalid.stub_must(:include, -> (_module) {
+        assert_equal( _module, RailsSQLPrettifier::ErrorExt )
+      }) { Niceql.configure{ |c| c.prettify_pg_errors = true } }
+    }
+  end
+
 end
