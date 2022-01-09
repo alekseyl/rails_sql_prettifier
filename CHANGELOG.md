@@ -1,3 +1,6 @@
+# 6.1.3
+* Now AR is a dependency not a development dependency 
+
 # 6.1.0
 
 * This a active record prior to 7.0 version and >= 6.1 compatible niceql integration 
