@@ -1,3 +1,6 @@
+# 6.0.4
+* Now AR is a dependency not a development dependency
+
 # 6.0.3
 * Fixed issue with Niceql.configure not configuring anything + test covered
 
