@@ -1,3 +1,6 @@
+# 5.0.3
+* active record versioning is properly aligned now
+
 # 5.0.2
 * Fixed issue with Niceql.configure not configuring anything + test covered
 
