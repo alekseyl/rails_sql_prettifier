@@ -2,9 +2,11 @@
 
 This is an ActiveRecord integration for a niceql gem ( niceql is a small, nice, simple and zero dependency solution for the SQL prettifying in ruby ).
 
-This gem started as a code extraction from niceql version 0.4.x. Its separated by different ActiveRecord versions, niceql prior to 0.5 version had logic branching based on ActiveRecord versioning e.t.c. 
+This gem started as a code extraction from niceql version 0.4.x. 
 
-That is hard to maintain and hard to test, and also coupling with AR is breaking the original idea of a niceql to be a dependentless solution, so now niceql is a completely railsfree gem yeay! ( It still has some hidden dependency via some checks in the error prettifying method, it might be completely decoupled in the future )
+It has versioning aligned to the ActiveRecord versions, niceql prior to 0.5 version had hardcoded logic branches based on ActiveRecord versioning. 
+
+That is hard to maintain and hard to test, and also coupling with AR is breaking the original idea of the niceql to be a dependentless solution, so now the niceql is a completely railsfree gem yeay! ( It still has some some checks related to AR implemetations in the error prettifying methods. It will be completely decoupled in the future )
 
 Any reasonable suggestions are welcome. 
 
