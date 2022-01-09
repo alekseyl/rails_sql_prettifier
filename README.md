@@ -34,7 +34,7 @@ if whenever you specify versions manually.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'rails_sql_prettifier'
+gem 'rails_sql_prettifier', '~> X.X.X'
 ```
 
 And then execute:
