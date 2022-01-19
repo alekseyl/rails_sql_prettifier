@@ -1,3 +1,7 @@
+# 6.1.4
+* fixed issue [#20](https://github.com/alekseyl/niceql/issues/20)
+* adding support for multiple ruby versions testing using docker-compose
+
 # 6.1.3
 * Now AR is a dependency not a development dependency 
 

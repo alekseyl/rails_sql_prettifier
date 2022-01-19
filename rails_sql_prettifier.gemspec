@@ -38,10 +38,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", ">= 12.3.3"
   spec.add_development_dependency "minitest", "~> 5.0"
 
+  spec.add_development_dependency "awesome_print"
   spec.add_development_dependency "differ", '~> 0.1'
   spec.add_development_dependency "pry-byebug", '~> 3.9'
   spec.add_development_dependency 'sqlite3', '~> 1'
   spec.add_development_dependency 'pg', '~> 1'
 
-  spec.add_development_dependency 'stubberry', '~> 0.1'
+  spec.add_development_dependency 'stubberry', '~> 0.2'
 end

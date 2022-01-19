@@ -4,7 +4,16 @@ services:
   test:
     build: .
     image: niceql
-    command: service postgresql start && rake test
+    command: /bin/bash -c 'service postgresql start && rake test'
+    volumes:
+      - '.:/app'
+
+  test_3_0:
+    build:
+      context: .
+      dockerfile: Dockerfile_30
+    image: niceql_3_0
+    command: /bin/bash -c 'service postgresql start && rake test'
     volumes:
       - '.:/app'
 

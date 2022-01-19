@@ -28,11 +28,13 @@ module RailsSQLPrettifier
   end
 
   module AbstractAdapterLogPrettifier
-    def log( sql, *args, &block )
+    private
+    def log( sql, *args, **kwargs, &block )
       # \n need to be placed because AR log will start with action description + time info.
       # rescue sql - just to be sure Prettifier wouldn't break production
       formatted_sql = "\n" + Niceql::Prettifier.prettify_sql(sql) rescue sql
-      super( formatted_sql, *args, &block )
+
+      super( formatted_sql, *args, **kwargs, &block )
     end
   end
 
@@ -52,7 +54,6 @@ module RailsSQLPrettifier
                     :prettify_active_record_log_output,
                     :prettify_pg_errors
     end
-
 
     def ar_using_pg_adapter?
       ActiveRecord::Base.connection_db_config.adapter == 'postgresql'
