@@ -6,7 +6,7 @@ This gem started as a code extraction from niceql version 0.4.x.
 
 It has versioning aligned to the ActiveRecord versions, niceql prior to 0.5 version had hardcoded logic branches based on ActiveRecord versioning. 
 
-That is hard to maintain and hard to test, and also coupling with AR is breaking the original idea of the niceql to be a dependentless solution, so now the niceql is a completely railsfree gem yeay! ( It still has some some checks related to AR implemetations in the error prettifying methods. It will be completely decoupled in the future )
+That is hard to maintain and hard to test, and also coupling with AR is breaking the original idea of the niceql to be a dependentless solution, so now the niceql is a completely railsfree gem yeay! ( It still has some some checks related to AR implementations in the error prettifying methods. It will be completely decoupled in the future )
 
 Any reasonable suggestions are welcome. 
 
@@ -94,8 +94,6 @@ end
 
 ## Usage
 
-### With ActiveRecord
-
 ```ruby
   # puts colorized and formatted corresponding SQL query
   Model.scope.niceql
@@ -157,7 +155,10 @@ end
 If your console support more colors or different schemes, or if you prefer different colorization, then you can override ColorizeString methods. 
 Current colors were selected with dark and white console themes in mind, so a niceql colorization works good for dark, and good enough for white.
 
-## 
+## Testing
+```bash
+docker-compose up
+```
 
 ## Contributing
 
