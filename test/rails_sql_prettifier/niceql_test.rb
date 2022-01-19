@@ -6,10 +6,16 @@ require 'byebug'
 # but that is not an issue for a testing
 ::ActiveRecord::StatementInvalid.include( RailsSQLPrettifier::ErrorExt )
 
-ActiveRecord::Base.logger = Logger.new(STDOUT)
-
 class NiceQLTest < Minitest::Test
   extend ::ActiveSupport::Testing::Declarative
+
+  def self.test(*args, &block)
+    super(*args) do
+      Niceql.stub( :config, Niceql::NiceQLConfig.new ) do
+        instance_eval &block
+      end
+    end
+  end
 
   def assert_equal_standard(niceql_result, etalon )
     if etalon != niceql_result
@@ -143,17 +149,18 @@ class NiceQLTest < Minitest::Test
   end
 
   test 'StatementInvalid will include ErrorExt only when ar_using_pg_adapter? is true and prettify_pg_errors true' do
-    assert(!Niceql::NiceQLConfig.new.ar_using_pg_adapter?)
+    ActiveRecord::Base.stub(:connection_config, {adapter: 'sqlite3', encoding: 'utf8', database: 'niceql_test'}) {
 
-    ::ActiveRecord::StatementInvalid.stub_must_not(:include ) {
-      Niceql.configure{ |c| c.prettify_pg_errors = true }
+      assert(!Niceql::NiceQLConfig.new.ar_using_pg_adapter?)
+
+      ::ActiveRecord::StatementInvalid.stub_must_not(:include ) {
+        Niceql.configure{ |c| c.prettify_pg_errors = true }
+      }
     }
 
-    ActiveRecord::Base.stub(:connection_config, { adapter: 'postgresql'} ) {
-      ::ActiveRecord::StatementInvalid.stub_must(:include, -> (_module) {
-        assert_equal( _module, RailsSQLPrettifier::ErrorExt )
-      }) { Niceql.configure{ |c| c.prettify_pg_errors = true } }
-    }
+    ::ActiveRecord::StatementInvalid.stub_must(:include, -> (_module) {
+      assert_equal( _module, RailsSQLPrettifier::ErrorExt )
+    }) { Niceql.configure{ |c| c.prettify_pg_errors = true } }
   end
 
 end
