@@ -35,13 +35,13 @@ class ARTest < ActiveSupport::TestCase
   # include ::ActiveSupport::Testing::Assertions
 
   test 'ar_using_pg_adapter? whenever AR is not defined will be false' do
-    assert_equal( ActiveRecord::Base.connection_db_config.adapter, 'sqlite3' )
-    assert( !Niceql::NiceQLConfig.new.ar_using_pg_adapter? )
+    assert_equal( ActiveRecord::Base.connection_db_config.adapter, 'postgresql' )
+    assert( Niceql::NiceQLConfig.new.ar_using_pg_adapter? )
   end
 
   test 'ar_using_pg_adapter? should be true whenever connection_db_config.adapter is postgresql' do
-    ActiveRecord::Base.connection_db_config.stub(:adapter, 'postgresql') {
-      assert(Niceql::NiceQLConfig.new.ar_using_pg_adapter?)
+    ActiveRecord::Base.connection_db_config.stub(:adapter, 'sqlite3') {
+      assert(!Niceql::NiceQLConfig.new.ar_using_pg_adapter?)
     }
   end
 

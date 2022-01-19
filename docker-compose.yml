@@ -3,7 +3,7 @@ version: "3.7"
 services:
   test:
     build: .
-    image: niceql
+    image: rsp_6_1
     command: /bin/bash -c 'service postgresql start && rake test'
     volumes:
       - '.:/app'
@@ -12,7 +12,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile_30
-    image: niceql_3_0
+    image: rsp_6_1_3_0
     command: /bin/bash -c 'service postgresql start && rake test'
     volumes:
       - '.:/app'

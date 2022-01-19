@@ -138,6 +138,7 @@ class NiceQLTest < Minitest::Test
     } ) {
       Niceql.configure{ |c| c.pg_adapter_with_nicesql = true }
     }
+
   end
 
   test 'AbstractAdapter will be extended with AbstractAdapterLogPrettifier after config setup bb' do
