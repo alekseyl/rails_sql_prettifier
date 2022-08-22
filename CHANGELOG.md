@@ -1,3 +1,7 @@
+#5.0.4
+* fixed issue [#20](https://github.com/alekseyl/niceql/issues/20)
+* adding support for multiple ruby versions testing using docker-compose
+
 # 5.0.3
 * active record versioning is properly aligned now
 
