@@ -6,7 +6,7 @@ This gem started as a code extraction from niceql version 0.4.x.
 
 It has versioning aligned to the ActiveRecord versions, niceql prior to 0.5 version had hardcoded logic branches based on ActiveRecord versioning. 
 
-That is hard to maintain and hard to test, and also coupling with AR is breaking the original idea of the niceql to be a dependentless solution, so now the niceql is a completely railsfree gem yeay! ( It still has some some checks related to AR implemetations in the error prettifying methods. It will be completely decoupled in the future )
+That is hard to maintain and hard to test, and also coupling with AR is breaking the original idea of the niceql to be a dependentless solution, so now the niceql is a completely railsfree gem yeay! ( It still has some some checks related to AR implementations in the error prettifying methods. It will be completely decoupled in the future )
 
 Any reasonable suggestions are welcome. 
 
@@ -51,12 +51,14 @@ Or install it yourself as:
 
 ```ruby
 Niceql.configure do |c|
-  # Setting pg_adapter_with_nicesql to true will force formatting SQL queries
+  # Setting pg_adapter_with_nicesql to true will APPLY formatting SQL queries
   # before execution. Formatted SQL will lead to much better SQL-query debugging and much more clearer error messages 
   # if you are using Postgresql as a data source. 
-  # BUT do not use it in production until https://github.com/alekseyl/niceql/issues/16 is resolved 
   # 
-  # You can adjust pg_adapter in production but do it at your own risk!
+  # BUT even though https://github.com/alekseyl/niceql/issues/16 is resolved, 
+  # there could be other potentially uncovered bugs so its better not to
+  # adjust pg_adapter in production, currently there is an additional blocker for that module ProtectedEnv
+  # its will not allow patching PGAdapter for other than test/development envs 
   # 
   # If you need to debug SQL queries in production use exec_niceql
   # 
@@ -94,8 +96,6 @@ end
 
 ## Usage
 
-### With ActiveRecord
-
 ```ruby
   # puts colorized and formatted corresponding SQL query
   Model.scope.niceql
@@ -103,7 +103,7 @@ end
   # only formatting without colorization, you can run output of to_niceql as a SQL query in connection.execute  
   Model.scope.to_niceql
   
-  # prettify PG errors if scope runs with any 
+  # will run prettified sql and hence will properly prettify PG errors if scope runs with any 
   Model.scope_with_err.exec_niceql 
 ```
 
@@ -157,7 +157,10 @@ end
 If your console support more colors or different schemes, or if you prefer different colorization, then you can override ColorizeString methods. 
 Current colors were selected with dark and white console themes in mind, so a niceql colorization works good for dark, and good enough for white.
 
-## 
+## Testing
+```bash
+docker-compose up
+```
 
 ## Contributing
 
