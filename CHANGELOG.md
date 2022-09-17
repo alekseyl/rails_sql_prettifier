@@ -1,3 +1,7 @@
+# 6.1.5
+* pg_adapter_with_nicesql setting will not be set to action for protected_env
+* niceql version set to ~> 0.6 (fixed https://github.com/alekseyl/niceql/issues/16 !)
+
 # 6.1.4
 * fixed issue [#20](https://github.com/alekseyl/niceql/issues/20)
 * adding support for multiple ruby versions testing using docker-compose

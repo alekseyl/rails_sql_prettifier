@@ -51,12 +51,14 @@ Or install it yourself as:
 
 ```ruby
 Niceql.configure do |c|
-  # Setting pg_adapter_with_nicesql to true will force formatting SQL queries
+  # Setting pg_adapter_with_nicesql to true will APPLY formatting SQL queries
   # before execution. Formatted SQL will lead to much better SQL-query debugging and much more clearer error messages 
   # if you are using Postgresql as a data source. 
-  # BUT do not use it in production until https://github.com/alekseyl/niceql/issues/16 is resolved 
   # 
-  # You can adjust pg_adapter in production but do it at your own risk!
+  # BUT even though https://github.com/alekseyl/niceql/issues/16 is resolved, 
+  # there could be other potentially uncovered bugs so its better not to
+  # adjust pg_adapter in production, currently there is an additional blocker for that module ProtectedEnv
+  # its will not allow patching PGAdapter for other than test/development envs 
   # 
   # If you need to debug SQL queries in production use exec_niceql
   # 
@@ -101,7 +103,7 @@ end
   # only formatting without colorization, you can run output of to_niceql as a SQL query in connection.execute  
   Model.scope.to_niceql
   
-  # prettify PG errors if scope runs with any 
+  # will run prettified sql and hence will properly prettify PG errors if scope runs with any 
   Model.scope_with_err.exec_niceql 
 ```
 
