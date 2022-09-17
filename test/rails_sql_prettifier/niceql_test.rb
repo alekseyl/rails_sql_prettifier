@@ -6,6 +6,13 @@ require 'byebug'
 # but that is not an issue for a testing
 ::ActiveRecord::StatementInvalid.include( RailsSQLPrettifier::ErrorExt )
 
+# activerecord will not include adapter by default, unless we use a pg connection setup
+class ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter; end unless defined?(::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
+
+module Rails
+  def self.env; end
+end unless defined?(Rails)
+
 class NiceQLTest < Minitest::Test
   extend ::ActiveSupport::Testing::Declarative
 
@@ -129,19 +136,41 @@ class NiceQLTest < Minitest::Test
     end
   end
 
-  test 'PostgreSQLAdapter will include PostgresAdapterNiceQL after config setup ' do
-    # activerecord will not include adapter by default, unless we use a pg connection setup
-    class ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter; end unless defined?(::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
-
-    ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.stub_must(:include, ->( _module ) {
-      assert_equal( _module, RailsSQLPrettifier::PostgresAdapterNiceQL )
-    } ) {
-      Niceql.configure{ |c| c.pg_adapter_with_nicesql = true }
-    }
-
+  test 'PostgreSQLAdapter will include PostgresAdapterNiceQL after config setup' do
+    Niceql.stub_must(:protected_env?, false) do
+      ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.stub_must(:include, ->( _module ) {
+        assert_equal( _module, RailsSQLPrettifier::PostgresAdapterNiceQL )
+      } ) {
+        Niceql.configure{ |c| c.pg_adapter_with_nicesql = true }
+      }
+    end
   end
 
-  test 'AbstractAdapter will be extended with AbstractAdapterLogPrettifier after config setup bb' do
+  test 'PostgreSQLAdapter will not include PostgresAdapterNiceQL if env is protected' do
+    Niceql.stub_must(:protected_env?, true) do
+      ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.stub_must_not(:include ) {
+        Niceql.configure{ |c| c.pg_adapter_with_nicesql = true }
+      }
+    end
+  end
+
+  test 'PostgreSQLAdapter will not be updated for Rails production even when pg_adapter_with_nicesql is true' do
+    Rails.stub_must(:env, ActiveSupport::EnvironmentInquirer.new("production") ) do
+      ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.stub_must_not(:include) {
+        Niceql.configure{ |c| c.pg_adapter_with_nicesql = true }
+      }
+    end
+  end
+
+  test 'PostgreSQLAdapter will be updated for Rails development env' do
+    Rails.stub_must(:env, ActiveSupport::EnvironmentInquirer.new("development") ) do
+      ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.stub_must(:include, :do_nothing) {
+        Niceql.configure{ |c| c.pg_adapter_with_nicesql = true }
+      }
+    end
+  end
+
+  test 'AbstractAdapter will be extended with AbstractAdapterLogPrettifier after config setup' do
     ::ActiveRecord::ConnectionAdapters::AbstractAdapter.stub_must(:prepend, ->( _module ) {
       assert_equal( _module, RailsSQLPrettifier::AbstractAdapterLogPrettifier )
     } ) {
@@ -150,9 +179,8 @@ class NiceQLTest < Minitest::Test
   end
 
   test 'StatementInvalid will include ErrorExt only when ar_using_pg_adapter? is true and prettify_pg_errors true' do
-    ActiveRecord::Base.connection_db_config.stub(:adapter, 'sqplite3') {
-
-        assert(!Niceql::NiceQLConfig.new.ar_using_pg_adapter?)
+    ActiveRecord::Base.connection_db_config.stub(:adapter, 'sqlite3') {
+      assert(!Niceql::NiceQLConfig.new.ar_using_pg_adapter?)
 
       ::ActiveRecord::StatementInvalid.stub_must_not(:include ) {
         Niceql.configure{ |c| c.prettify_pg_errors = true }

@@ -2,7 +2,6 @@ require "rails_sql_prettifier/version"
 require 'active_record'
 require "niceql"
 
-
 module RailsSQLPrettifier
 
   module ArExtentions
@@ -71,13 +70,20 @@ module RailsSQLPrettifier
     def configure
       super
 
-      if config.pg_adapter_with_nicesql && defined?( ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter )
-        ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.include( PostgresAdapterNiceQL)
+      if config.pg_adapter_with_nicesql && defined?(::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) && !protected_env?
+        ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.include(PostgresAdapterNiceQL)
       end
 
       ::ActiveRecord::ConnectionAdapters::AbstractAdapter.prepend( AbstractAdapterLogPrettifier ) if config.prettify_active_record_log_output
 
       ::ActiveRecord::StatementInvalid.include( RailsSQLPrettifier::ErrorExt ) if config.prettify_pg_errors && config.ar_using_pg_adapter?
+    end
+  end
+
+  module ProtectedEnv
+    def protected_env?
+      ActiveRecord::Base.connection.migration_context.protected_environment? ||
+        defined?(Rails) && !(Rails.env.test? || Rails.env.development?)
     end
   end
 
@@ -89,4 +95,5 @@ module RailsSQLPrettifier
 
   # we need to use a prepend otherwise it's not preceding Niceql.configure in a lookup chain
   Niceql.singleton_class.prepend( NiceqlExt )
+  Niceql.extend(ProtectedEnv)
 end

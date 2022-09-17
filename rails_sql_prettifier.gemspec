@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = '>= 2.4'
-  spec.add_dependency "niceql", '~> 0.5'
+  spec.add_dependency "niceql", '~> 0.6'
   spec.add_dependency "activerecord", '>= 7'
 
   spec.add_development_dependency "bundler", ">= 1"
