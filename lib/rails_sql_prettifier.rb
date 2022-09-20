@@ -20,9 +20,9 @@ module RailsSQLPrettifier
   end
 
   module PostgresAdapterNiceQL
-    def exec_query(sql, name = "SQL", binds = [], prepare: false)
+    def exec_query(sql, *args, **kwargs, &block)
       # replacing sql with prettified sql, thats all
-      super( Niceql::Prettifier.prettify_sql(sql, false), name, binds, prepare: prepare )
+      super( Niceql::Prettifier.prettify_sql(sql, false), *args, **kwargs, &block )
     end
   end
 
