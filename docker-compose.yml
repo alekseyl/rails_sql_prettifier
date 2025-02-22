@@ -16,3 +16,12 @@ services:
     command: /bin/bash -c 'service postgresql start && rake test'
     volumes:
       - '.:/app'
+
+  test_3_1:
+    build:
+      context: .
+      dockerfile: Dockerfile_3_1
+    image: niceql_3_1
+    command: /bin/bash -c 'service postgresql start && rake test'
+    volumes:
+      - '.:/app'
