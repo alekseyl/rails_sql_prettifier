@@ -1,3 +1,8 @@
+# 7.0.6
+* Fixed issue with protected_env for a 7.2 rails 
+* github CI is working
+* rubocoped a little 
+
 # 7.0.5
 * Fixed tests 
 * Restructured code properly
