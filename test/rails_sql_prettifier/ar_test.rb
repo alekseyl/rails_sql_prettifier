@@ -1,15 +1,10 @@
 require_relative '../test_helper'
 
-
-# ActiveRecord::Base.establish_connection(
-#   adapter: 'sqlite3',
-#   database: ':memory:'
-# )
-
 ActiveRecord::Base.establish_connection(
   adapter: 'postgresql',
   database: 'niceql-test',
-  user: 'postgres'
+  user: 'postgres',
+  password: 'postgres'
 )
 
 Niceql.configure { |config|

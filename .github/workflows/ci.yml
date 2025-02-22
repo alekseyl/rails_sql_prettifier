@@ -12,6 +12,18 @@ jobs:
       matrix:
         ruby: ["2.7", "3.0", "3.1", "3.2", "3.3"]
 
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      # more about postgres image can be read here: https://hub.docker.com/_/postgres
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: niceql-test
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Ruby
@@ -20,4 +32,4 @@ jobs:
         bundler-cache: true # 'bundle install' and cache gems
         ruby-version: ${{ matrix.ruby }}
     - name: Run tests
-      run: service postgresql start && bundle exec rake test
+      run: bundle exec rake test
