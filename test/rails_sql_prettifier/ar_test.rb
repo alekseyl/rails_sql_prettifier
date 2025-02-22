@@ -1,12 +1,17 @@
 require_relative '../test_helper'
 
-ActiveRecord::Base.establish_connection(
+db_connection = {
   adapter: 'postgresql',
   database: 'niceql-test',
   user: 'postgres',
   password: 'postgres',
   host: ENV['POSTGRES_HOST'],
-)
+  port: ENV['POSTGRES_PORT'],
+}
+
+puts db_connection
+
+ActiveRecord::Base.establish_connection(db_connection)
 
 Niceql.configure { |config|
   config.pg_adapter_with_nicesql = false

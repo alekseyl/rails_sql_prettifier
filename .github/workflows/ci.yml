@@ -24,6 +24,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: niceql-test
+          POSTGRES_USER: postgres
         # this options should be kept, otherwise pg container will not be waited
         options: >-
           --health-cmd pg_isready
@@ -41,6 +42,5 @@ jobs:
     - name: Run tests
       run: bundle exec rake test
       env:
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: niceql-test
         POSTGRES_HOST: postgres
+        POSTGRES_PORT: 5432

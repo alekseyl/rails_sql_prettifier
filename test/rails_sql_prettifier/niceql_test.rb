@@ -76,7 +76,6 @@ class NiceQLTest < Minitest::Test
       SELECT other FROM other_table;
     PRETTIFY_ME
 
-    byebug
     # ETALON goes with \n at the end :(
     assert_equal_standard(prettySQL, etalon.chop)
   end
