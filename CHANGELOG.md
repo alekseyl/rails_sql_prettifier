@@ -1,3 +1,7 @@
+# 7.0.7
+* restored >= 7 versioning for activerecord
+* added appraisal, including CI 
+
 # 7.0.6
 * Fixed issue with protected_env for a 7.2 rails 
 * github CI is working

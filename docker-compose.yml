@@ -25,3 +25,12 @@ services:
     command: /bin/bash -c 'service postgresql start && rake test'
     volumes:
       - '.:/app'
+
+  appraisal:
+    build:
+      context: .
+      dockerfile: Dockerfile_apprsl
+    image: niceql_appr
+    command: /bin/bash -c 'service postgresql start && appraisal rake test'
+    volumes:
+      - '.:/app'
