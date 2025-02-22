@@ -48,8 +48,8 @@ jobs:
         sudo apt-get -y install libpq-dev postgresql-client
     - name: Check connection to pg
       run: |
-        psql postgresql://postgres:postgres@postgres:5432 -c 'CREATE DATABASE "niceql-test"'
+        psql postgresql://postgres:postgres@localhost:5432 -c 'CREATE DATABASE "niceql-test"'
     - name: Run tests
       run: bundle exec rake test
       env:
-        POSTGRES_HOST: postgres
+        POSTGRES_HOST: localhost
