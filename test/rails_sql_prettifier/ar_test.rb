@@ -4,7 +4,8 @@ ActiveRecord::Base.establish_connection(
   adapter: 'postgresql',
   database: 'niceql-test',
   user: 'postgres',
-  password: 'postgres'
+  password: 'postgres',
+  host: ENV['POSTGRES_HOST'],
 )
 
 Niceql.configure { |config|

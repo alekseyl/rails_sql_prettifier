@@ -16,6 +16,7 @@ jobs:
     services:
       # Label used to access the service container
       # more about postgres image can be read here: https://hub.docker.com/_/postgres
+      # more about using pg image in CI: https://docs.github.com/en/actions/use-cases-and-examples/using-containerized-services/creating-postgresql-service-containers
       postgres:
         # Docker Hub image
         image: postgres
@@ -33,3 +34,7 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
     - name: Run tests
       run: bundle exec rake test
+      env:
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: niceql-test
+        POSTGRES_HOST: postgres
