@@ -25,7 +25,6 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: niceql-test
           POSTGRES_USER: postgres
-          POSTGRES_HOST_AUTH_METHOD: trust
         # this options should be kept, otherwise pg container will not be waited
         options: >-
           --health-cmd pg_isready
@@ -43,8 +42,10 @@ jobs:
       with:
         bundler-cache: true # 'bundle install' and cache gems
         ruby-version: ${{ matrix.ruby }}
+    - name: Install required apt packages
+      run: |
+        sudo apt-get -y install libpq-dev
     - name: Run tests
       run: bundle exec rake test
       env:
         POSTGRES_HOST: postgres
-        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
