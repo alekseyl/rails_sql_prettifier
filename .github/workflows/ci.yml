@@ -44,7 +44,7 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
     - name: Install required apt packages
       run: |
-        sudo apt-get -y install libpq-dev postgresql-client-14
+        sudo apt-get -y install libpq-dev postgresql-client
     - name: Check connection to pg
       run: |
         psql postgresql://postgres:postgres@postgres:5432 -c 'CREATE DATABASE "niceql-test"'
