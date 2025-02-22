@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   # for rails 7 you cannot use ruby below 2.7
   spec.required_ruby_version = '>= 2.7'
   spec.add_dependency "niceql", '~> 0.6'
-  spec.add_dependency "activerecord", '>= 7'
+  spec.add_dependency "activerecord", '>= 7', '< 8'
 
   spec.add_development_dependency "bundler", ">= 1"
   spec.add_development_dependency "rake", ">= 12.3.3"
