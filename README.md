@@ -1,16 +1,10 @@
 # RailsSQLPrettifier
 
 This is an ActiveRecord integration for a niceql gem ( niceql is a small, nice, simple and zero dependency solution for the SQL prettifying in ruby ).
-
-This gem started as a code extraction from niceql version 0.4.x. 
-
-It has versioning aligned to the ActiveRecord versions, niceql prior to 0.5 version had hardcoded logic branches based on ActiveRecord versioning. 
-
-That is hard to maintain and hard to test, and also coupling with AR is breaking the original idea of the niceql to be a dependentless solution, so now the niceql is a completely railsfree gem yeay! ( It still has some some checks related to AR implementations in the error prettifying methods. It will be completely decoupled in the future )
-
 Any reasonable suggestions are welcome. 
  
 ## Before/After 
+
 ### SQL prettifier: 
 ![alt text](https://github.com/alekseyl/niceql/raw/master/to_niceql.png "To_niceql")
 
@@ -43,53 +37,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install niceql
-
-## Configuration
-
-```ruby
-Niceql.configure do |c|
-  # Setting pg_adapter_with_nicesql to true will APPLY formatting SQL queries
-  # before execution. Formatted SQL will lead to much better SQL-query debugging and much more clearer error messages 
-  # if you are using Postgresql as a data source. 
-  # 
-  # BUT even though https://github.com/alekseyl/niceql/issues/16 is resolved, 
-  # there could be other potentially uncovered bugs so its better not to
-  # adjust pg_adapter in production, currently there is an additional blocker for that module ProtectedEnv
-  # its will not allow patching PGAdapter for other than test/development envs 
-  # 
-  # If you need to debug SQL queries in production use exec_niceql
-  # 
-  # default value for pg_adapter_with_nicesql: false
-  # uncomment next string to enable in development
-  # c.pg_adapter_with_nicesql = Rails.env.development?
-  
-  # uncomment next string if you want to log prettified SQL inside ActiveRecord logging. 
-  # default: false
-  # c.prettify_active_record_log_output = true
-  
-  # Error prettifying is also configurable
-  # default: defined? ::ActiveRecord::Base && ActiveRecord::Base.configurations[Rails.env]['adapter'] == 'postgresql'
-  # c.prettify_pg_errors = defined? ::ActiveRecord::Base && ActiveRecord::Base.configurations[Rails.env]['adapter'] == 'postgresql'
-  
-  # spaces count for one indentation, default is 2
-  c.indentation_base = 2
-  
-  # setting open_bracket_is_newliner to true will start opening brackets '(' with nested subqueries from new line 
-  # i.e. SELECT * FROM ( SELECT * FROM tags ) tags; will transform to: 
-  # SELECT * 
-  # FROM 
-  # ( 
- #    SELECT * FROM tags 
- #  ) tags;
- # when open_bracket_is_newliner is false: 
-  # SELECT * 
-  # FROM ( 
- #   SELECT * FROM tags 
- # ) tags; 
- # default: false
-  c.open_bracket_is_newliner = false
-end
-```
 
 ## Usage
 
@@ -149,14 +96,61 @@ end
     #     ORDER BY 1
 
 ```
+## Configuration
+
+```ruby
+Niceql.configure do |c|
+  # Setting pg_adapter_with_nicesql to true will APPLY formatting SQL queries
+  # before execution. Formatted SQL will lead to much better SQL-query debugging and much more clearer error messages 
+  # if you are using Postgresql as a data source. 
+  # 
+  # BUT even though https://github.com/alekseyl/niceql/issues/16 is resolved, 
+  # there could be other potentially uncovered bugs so its better not to
+  # adjust pg_adapter in production, currently there is an additional blocker for that module ProtectedEnv
+  # its will not allow patching PGAdapter for other than test/development envs 
+  # 
+  # If you need to debug SQL queries in production use exec_niceql
+  # 
+  # default value for pg_adapter_with_nicesql: false
+  # uncomment next string to enable in development
+  # c.pg_adapter_with_nicesql = Rails.env.development?
+  
+  # uncomment next string if you want to log prettified SQL inside ActiveRecord logging. 
+  # default: false
+  # c.prettify_active_record_log_output = true
+  
+  # Error prettifying is also configurable
+  # default: defined? ::ActiveRecord::Base && ActiveRecord::Base.configurations[Rails.env]['adapter'] == 'postgresql'
+  # c.prettify_pg_errors = defined? ::ActiveRecord::Base && ActiveRecord::Base.configurations[Rails.env]['adapter'] == 'postgresql'
+  
+  # spaces count for one indentation, default is 2
+  c.indentation_base = 2
+  
+  # setting open_bracket_is_newliner to true will start opening brackets '(' with nested subqueries from new line 
+  # i.e. SELECT * FROM ( SELECT * FROM tags ) tags; will transform to: 
+  # SELECT * 
+  # FROM 
+  # ( 
+ #    SELECT * FROM tags 
+ #  ) tags;
+ # when open_bracket_is_newliner is false: 
+  # SELECT * 
+  # FROM ( 
+ #   SELECT * FROM tags 
+ # ) tags; 
+ # default: false
+  c.open_bracket_is_newliner = false
+end
+```
 
 ## Customizing colors
 If your console support more colors or different schemes, or if you prefer different colorization, then you can override ColorizeString methods. 
 Current colors were selected with dark and white console themes in mind, so a niceql colorization works good for dark, and good enough for white.
 
 ## Testing
+
 ```bash
-docker-compose up
+docker compose up
 ```
 
 ## Contributing
