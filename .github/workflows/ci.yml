@@ -45,6 +45,6 @@ jobs:
     - name: install appraisal
       run: bundle exec appraisal install
     - name: Run tests
-      run: bundle exec rake test
+      run: bundle exec appraisal rake test
       env:
         POSTGRES_HOST: localhost
