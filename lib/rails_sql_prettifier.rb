@@ -1,99 +1,19 @@
 require "rails_sql_prettifier/version"
+require "rails_sql_prettifier/abstract_adapter_log_prettifier"
+require "rails_sql_prettifier/ar_extensions"
+require "rails_sql_prettifier/niceql_error"
+require "rails_sql_prettifier/nice_ql_config_ext"
+require "rails_sql_prettifier/postgres_adapter_nice_ql"
+require "rails_sql_prettifier/protected_env"
+
 require 'active_record'
 require "niceql"
 
 module RailsSQLPrettifier
+  ::ActiveRecord::Relation.include ArExtentions
+  ::Arel::TreeManager.include      ArExtentions
+  ::Arel::Nodes::Node.include      ArExtentions
 
-  module ArExtentions
-    def exec_niceql
-      connection.execute( to_niceql )
-    end
-
-    def to_niceql
-      Niceql::Prettifier.prettify_sql(to_sql, false)
-    end
-
-    def niceql( colorize = true )
-      puts Niceql::Prettifier.prettify_sql( to_sql, colorize )
-    end
-
-  end
-
-  module PostgresAdapterNiceQL
-    def exec_query(sql, *args, **kwargs, &block)
-      # replacing sql with prettified sql, thats all
-      super( Niceql::Prettifier.prettify_sql(sql, false), *args, **kwargs, &block )
-    end
-  end
-
-  module AbstractAdapterLogPrettifier
-    private
-    def log( sql, *args, **kwargs, &block )
-      # \n need to be placed because AR log will start with action description + time info.
-      # rescue sql - just to be sure Prettifier wouldn't break production
-      formatted_sql = "\n" + Niceql::Prettifier.prettify_sql(sql) rescue sql
-
-      super( formatted_sql, *args, **kwargs, &block )
-    end
-  end
-
-  module ErrorExt
-    def to_s
-      # older rails version do not provide sql as a standalone query, instead they
-      # deliver joined message
-      Niceql.config.prettify_pg_errors ? Niceql::Prettifier.prettify_err(super, try(:sql) ) : super
-    end
-  end
-
-  module NiceQLConfigExt
-    extend ActiveSupport::Concern
-
-    included do
-      attr_accessor :pg_adapter_with_nicesql,
-                    :prettify_active_record_log_output,
-                    :prettify_pg_errors
-    end
-
-    def ar_using_pg_adapter?
-      ActiveRecord::Base.connection_db_config.adapter == 'postgresql'
-    end
-
-    def initialize
-      super
-      self.pg_adapter_with_nicesql = false
-      self.prettify_active_record_log_output = false
-      self.prettify_pg_errors = ar_using_pg_adapter?
-    end
-  end
-
-  module NiceqlExt
-    def configure
-      super
-
-      if config.pg_adapter_with_nicesql && defined?(::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) && !protected_env?
-        ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.include(PostgresAdapterNiceQL)
-      end
-
-      ::ActiveRecord::ConnectionAdapters::AbstractAdapter.prepend( AbstractAdapterLogPrettifier ) if config.prettify_active_record_log_output
-
-      ::ActiveRecord::StatementInvalid.include( RailsSQLPrettifier::ErrorExt ) if config.prettify_pg_errors && config.ar_using_pg_adapter?
-    end
-  end
-
-  module ProtectedEnv
-    def protected_env?
-      ActiveRecord::Base.connection.migration_context.protected_environment? ||
-        defined?(Rails) && !(Rails.env.test? || Rails.env.development?)
-    end
-  end
-
-  [::ActiveRecord::Relation,
-   ::Arel::TreeManager,
-   ::Arel::Nodes::Node].each { |klass| klass.send(:include, ArExtentions) }
-
-  Niceql::NiceQLConfig.include( NiceQLConfigExt )
-
-  # we need to use a prepend otherwise it's not preceding Niceql.configure in a lookup chain
-  Niceql.singleton_class.prepend( NiceqlExt )
+  Niceql::NiceQLConfig.include(NiceQLConfigExt)
   Niceql.extend(ProtectedEnv)
 end

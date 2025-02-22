@@ -4,7 +4,7 @@ require 'byebug'
 
 # we need to add this cause original include in the configure wants pg to be present
 # but that is not an issue for a testing
-::ActiveRecord::StatementInvalid.include( RailsSQLPrettifier::ErrorExt )
+::ActiveRecord::StatementInvalid.include( RailsSQLPrettifier::NiceqlError )
 
 # activerecord will not include adapter by default, unless we use a pg connection setup
 class ::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter; end unless defined?(::ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
@@ -19,7 +19,7 @@ class NiceQLTest < Minitest::Test
   def self.test(*args, &block)
     super(*args) do
       Niceql.stub( :config, Niceql::NiceQLConfig.new ) do
-        instance_eval &block
+        instance_eval(&block)
       end
     end
   end
@@ -32,9 +32,8 @@ class NiceQLTest < Minitest::Test
       puts niceql_result
       puts 'DIFF:----------------------------'
       puts Differ.diff(etalon, niceql_result)
+      raise 'Not equal'
     end
-
-    raise 'Not equal' unless etalon == niceql_result
   end
 
   def test_niceql
@@ -42,7 +41,7 @@ class NiceQLTest < Minitest::Test
       -- valuable comment first line
       SELECT some,
         -- valuable comment to inline verb
-        COUNT(attributes), /* some comment */
+        COUNT(attributes), /* some comment */#{" "}
         CASE WHEN some > 10 THEN '[{"attr": 2}]'::jsonb[] ELSE '{}'::jsonb[] END AS combined_attribute, more
         -- valuable comment to newline verb
         FROM some_table st
@@ -57,7 +56,6 @@ class NiceQLTest < Minitest::Test
         ORDER BY some
         GROUP BY some
         HAVING 2 > 1;
-
       --comment to second query;
       SELECT other
         FROM other_table;
@@ -75,11 +73,12 @@ class NiceQLTest < Minitest::Test
          comment */
       WHERE some NOT IN (SELECT other_some FROM other_table WHERE id IN ARRAY[1,2]::bigint[] ) ORDER BY   some GROUP BY some       HAVING 2 > 1;
       --comment to second query;
-         SELECT other FROM other_table;
+      SELECT other FROM other_table;
     PRETTIFY_ME
 
+    byebug
     # ETALON goes with \n at the end :(
-    assert_equal_standard(prettySQL, etalon.chop  )
+    assert_equal_standard(prettySQL, etalon.chop)
   end
 
   def broken_sql_sample
@@ -100,7 +99,7 @@ class NiceQLTest < Minitest::Test
   end
 
   def prepare_sample_err( base_err, prt_err_sql )
-    standard_err = base_err + prt_err_sql.gsub(/#{Niceql::Prettifier::VERBS}/ ) { |verb| Niceql::StringColorize.colorize_verb(verb) }
+    standard_err = base_err + prt_err_sql.gsub(/#{Niceql::Prettifier::KEYWORDS}/ ) { |verb| Niceql::StringColorize.colorize_keyword(verb) }
       .gsub(/#{Niceql::Prettifier::STRINGS }/ ) { |verb| Niceql::StringColorize.colorize_str(verb) }
 
     standard_err.gsub!('_COLORIZED_ERR_', Niceql::StringColorize.colorize_err( "FROM ( VALUES(1), (2) )\n")  +
@@ -188,7 +187,7 @@ class NiceQLTest < Minitest::Test
     }
 
     ::ActiveRecord::StatementInvalid.stub_must(:include, -> (_module) {
-      assert_equal( _module, RailsSQLPrettifier::ErrorExt )
+      assert_equal( _module, RailsSQLPrettifier::NiceqlError )
     }) { Niceql.configure{ |c| c.prettify_pg_errors = true } }
   end
 

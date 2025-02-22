@@ -54,7 +54,6 @@ class ARTest < ActiveSupport::TestCase
     assert(User.all.arel.source.to_niceql.is_a?(String)) # Arel::Nodes::Node
   end
 
-  #
   test 'log got called and then prettifier got called' do
 
     assert_method_called( ActiveRecord::Base.connection, :log ) do
