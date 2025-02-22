@@ -9,9 +9,6 @@ It has versioning aligned to the ActiveRecord versions, niceql prior to 0.5 vers
 That is hard to maintain and hard to test, and also coupling with AR is breaking the original idea of the niceql to be a dependentless solution, so now the niceql is a completely railsfree gem yeay! ( It still has some some checks related to AR implementations in the error prettifying methods. It will be completely decoupled in the future )
 
 Any reasonable suggestions are welcome. 
-
-**Please pay attention: until issue https://github.com/alekseyl/niceql/issues/16 is resolved any UPDATE or INSERT request might corrupt your data, don't use on production!**
-
  
 ## Before/After 
 ### SQL prettifier: 
