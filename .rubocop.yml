@@ -1,0 +1,97 @@
+inherit_gem:
+  rubocop-shopify: rubocop.yml
+
+AllCops:
+  Exclude:
+    - "./lib/templates/active_record/model/model.rb"
+    - "./lib/modules/flea.rb"
+
+Style/SingleLineMethods:
+  Description: 'Avoid single-line methods.'
+  StyleGuide: '#no-single-line-methods'
+  Enabled: false
+  VersionAdded: '0.9'
+  VersionChanged: '1.8'
+  AllowIfMethodIsEmpty: true
+
+Style/AsciiComments:
+  Description: 'Use only ascii symbols in comments.'
+  StyleGuide: '#english-comments'
+  Enabled: false
+  VersionAdded: '0.9'
+  VersionChanged: '1.21'
+  AllowedChars:
+    - ©
+
+Layout/LineLength:
+  Description: 'Checks that line length does not exceed the configured limit.'
+  StyleGuide: '#max-line-length'
+  Enabled: true
+  VersionAdded: '0.25'
+  VersionChanged: '1.4'
+  Max: 120
+  # To make it possible to copy or click on URIs in the code, we allow lines
+  # containing a URI to be longer than Max.
+  AllowHeredoc: true
+  AllowURI: true
+  URISchemes:
+    - http
+    - https
+  # The IgnoreCopDirectives option causes the LineLength rule to ignore cop
+  # directives like '# rubocop: enable ...' when calculating a line's length.
+  IgnoreCopDirectives: true
+  # The AllowedPatterns option is a list of !ruby/regexp and/or string
+  # elements. Strings will be converted to Regexp objects. A line that matches
+  # any regular expression listed in this option will be ignored by LineLength.
+  AllowedPatterns: []
+  IgnoredPatterns: [] # deprecated
+  Exclude:
+    - "./test/**/**/*"
+
+Metrics/ClassLength:
+  Description: 'Avoid classes longer than 100 lines of code.'
+  Enabled: false
+  VersionAdded: '0.25'
+  VersionChanged: '0.87'
+  CountComments: false  # count full line comments?
+  Max: 100
+  CountAsOne: []
+
+Lint/MissingCopEnableDirective:
+  Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
+  Enabled: true
+  VersionAdded: '0.52'
+  # Maximum number of consecutive lines the cop can be disabled for.
+  # 0 allows only single-line disables
+  # 1 would mean the maximum allowed is the following:
+  #   # rubocop:disable SomeCop
+  #   a = 1
+  #   # rubocop:enable SomeCop
+  # .inf for any size
+  MaximumRangeSize: .inf
+
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  IgnoredMethods:
+    - require
+    - require_relative
+    - require_dependency
+    - yield
+    - raise
+    - puts
+  Exclude:
+    - "/**/Gemfile"
+    - "./db/**/*"
+
+Layout/EmptyLinesAroundBlockBody:
+  # its more documentation than code, so it should be readable and
+  # there are huge amount of multiline description, looks nasty without spaces
+  Exclude:
+    - "./app_doc/**/*"
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Lint/UnderscorePrefixedVariableName:
+  Exclude:
+    - "./test/**/**/*"

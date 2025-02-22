@@ -1,4 +1,4 @@
-FROM ruby:2.7.5-bullseye
+FROM ruby:3.1-bullseye
 
 WORKDIR /app
 RUN  apt-get update && apt-get -y install lsb-release
@@ -11,7 +11,7 @@ RUN sh -c 'echo "local   all             all                                    
     service postgresql start && \
     psql -U postgres -c 'CREATE DATABASE "niceql-test"'
 
-RUN  gem install bundler -v 2.4.22
+RUN  gem install bundler
 
 COPY lib/rails_sql_prettifier/version.rb /app/lib/rails_sql_prettifier/version.rb
 COPY rails_sql_prettifier.gemspec /app/

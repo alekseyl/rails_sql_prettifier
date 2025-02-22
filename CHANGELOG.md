@@ -1,3 +1,13 @@
+# 7.0.6
+* Fixed issue with protected_env for a 7.2 rails 
+* github CI is working
+* rubocoped a little 
+
+# 7.0.5
+* Fixed tests 
+* Restructured code properly
+* Fixed issue with exec_niceql over relation with error, now error will be prettified properly 
+
 # 7.0.4
 * pg_adapter_with_nicesql setting will not be set to action for protected_env
 * niceql version set to ~> 0.6 (fixed https://github.com/alekseyl/niceql/issues/16 !)
