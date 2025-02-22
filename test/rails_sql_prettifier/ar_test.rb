@@ -9,7 +9,11 @@ db_connection = {
   port: ENV['POSTGRES_PORT'],
 }
 
-ActiveRecord::Base.establish_connection(db_connection)
+puts db_connection
+
+ActiveRecord::Base.establish_connection("postgres://postgres:postgres@#{ENV['POSTGRES_HOST']}:#{ENV['POSTGRES_PORT']}/niceql-test")
+
+#"postgres://myuser:mypass@localhost/somedatabase"
 
 Niceql.configure { |config|
   config.pg_adapter_with_nicesql = false
